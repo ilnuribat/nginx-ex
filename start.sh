@@ -1,16 +1,20 @@
 #!/bin/bash
 
-docker stop nginx-ex || true
+docker build . -t ilnuribat.ru:4443/nginx-ex
 
-docker rm nginx-ex || true
+#docker login ilnuribat.ru:4443 -u ilnuribat
 
-docker build . -t nginx-ex
+docker push ilnuribat.ru:4443/nginx-ex
 
-docker run -d \
-	-v ~/projects/nginx-ex/images/:/data/images/ \
-	-v ~/projects/nginx-ex/nginx.conf:/etc/nginx/nginx.conf \
-	-v ~/projects/nginx-ex/htmls/:/data/htmls/ \
-	-p 80:80 \
-	-p 443:443 \
-	--name=nginx-ex \
-	nginx-ex
+ssh root@ilnuribat.ru '
+  docker stop nginx-ex || true &&
+  docker rm nginx-ex || true &&
+  docker pull ilnuribat.ru:4443/nginx-ex &&
+  docker run -d \
+    -p 80:80 \
+    -p 443:443 \
+    -v /etc/letsencrypt/live/ilnuribat.ru/privkey.pem:/data/certs/privkey.pem \
+    -v /etc/letsencrypt/live/ilnuribat.ru/fullchain.pem:/data/certs/fullchain.pem \
+    --name=nginx-ex \
+    ilnuribat.ru:4443/nginx-ex
+  '
