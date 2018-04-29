@@ -4,9 +4,9 @@ WORKDIR /data
 
 COPY certs certs
 
-COPY htmls/ htmls/
+#COPY htmls/ htmls/
 
-COPY images/ images/
+#COPY images/ images/
 
-COPY nginx.conf /etc/nginx/nginx.conf
+#COPY nginx.conf /etc/nginx/nginx.conf
 
